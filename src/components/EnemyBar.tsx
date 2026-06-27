@@ -3,15 +3,16 @@ import { clamp } from "../utils/helpers";
 interface EnemyBarProps {
   hp: number;
   maxHp: number;
+  label?: string;
 }
 
-export function EnemyBar({ hp, maxHp }: EnemyBarProps) {
+export function EnemyBar({ hp, maxHp, label = "Enemy" }: EnemyBarProps) {
   const percent = clamp((hp / maxHp) * 100, 0, 100);
 
   return (
     <div className="enemy-bar">
       <div className="enemy-bar__label">
-        Enemy HP: {hp} / {maxHp}
+        {label}: {hp} / {maxHp}
       </div>
       <div className="enemy-bar__track" role="progressbar" aria-label="Enemy health" aria-valuemin={0} aria-valuemax={maxHp} aria-valuenow={hp}>
         <div

@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import type { GameStatus } from "../features/battle/battleTypes";
-import blueIdle from "../assets/BlueKnightIdle.png";
-import blueAttackImg from "../assets/BlueKnightAttack.png";
-import redIdle from "../assets/RedKnightInvertdIdle.png";
-import redAttackImg from "../assets/RedKnightInvertedAttack.png";
+import { CHARACTER_ASSETS } from "../features/characters/characterAssets";
+import { getCharacterDefinition } from "../../shared/characters/characterCatalog";
+import type { CharacterId } from "../../shared/characters/characterCatalog";
 import arenaBg from "../assets/Background4.jpg";
 
 /** Delays returning true by `delayMs` after `trigger` becomes true. Returns false when trigger is false. */
@@ -26,47 +25,57 @@ function useDelayedFlag(trigger: boolean, delayMs: number): boolean {
 
 interface BattleArenaProps {
   gameStatus: GameStatus;
+  playerCharacterId: CharacterId;
+  enemyCharacterId: CharacterId;
 }
 
-export function BattleArena({ gameStatus }: BattleArenaProps) {
-  const blueAttacking = gameStatus === "playerAttack";
-  const redAttacking = gameStatus === "enemyAttack";
+export function BattleArena({
+  gameStatus,
+  playerCharacterId,
+  enemyCharacterId,
+}: BattleArenaProps) {
+  const playerAttacking = gameStatus === "playerAttack";
+  const enemyAttacking = gameStatus === "enemyAttack";
 
-  const blueShowAttack = useDelayedFlag(blueAttacking, 300);
-  const redShowAttack = useDelayedFlag(redAttacking, 300);
+  const playerShowAttack = useDelayedFlag(playerAttacking, 300);
+  const enemyShowAttack = useDelayedFlag(enemyAttacking, 300);
 
-  const blueSrc = blueShowAttack ? blueAttackImg : blueIdle;
-  const redSrc = redShowAttack ? redAttackImg : redIdle;
+  const playerPose = CHARACTER_ASSETS[playerCharacterId].faceRight;
+  const enemyPose = CHARACTER_ASSETS[enemyCharacterId].faceLeft;
+  const playerSrc = playerShowAttack ? playerPose.attack : playerPose.idle;
+  const enemySrc = enemyShowAttack ? enemyPose.attack : enemyPose.idle;
+  const playerName = getCharacterDefinition(playerCharacterId).name;
+  const enemyName = getCharacterDefinition(enemyCharacterId).name;
 
-  const blueRef = useRef<HTMLDivElement>(null);
-  const redRef = useRef<HTMLDivElement>(null);
+  const playerRef = useRef<HTMLDivElement>(null);
+  const enemyRef = useRef<HTMLDivElement>(null);
   const [lungeDist, setLungeDist] = useState(0);
 
   // Force CSS animation restart by reflowing the element
   useEffect(() => {
-    if (blueAttacking && blueRef.current) {
-      const el = blueRef.current;
+    if (playerAttacking && playerRef.current) {
+      const el = playerRef.current;
       el.classList.remove("knight--attacking-right");
       void el.offsetWidth; // trigger reflow
       el.classList.add("knight--attacking-right");
     }
-  }, [blueAttacking]);
+  }, [playerAttacking]);
 
   useEffect(() => {
-    if (redAttacking && redRef.current) {
-      const el = redRef.current;
+    if (enemyAttacking && enemyRef.current) {
+      const el = enemyRef.current;
       el.classList.remove("knight--attacking-left");
       void el.offsetWidth; // trigger reflow
       el.classList.add("knight--attacking-left");
     }
-  }, [redAttacking]);
+  }, [enemyAttacking]);
 
   useEffect(() => {
     function measure() {
-      if (blueRef.current && redRef.current) {
-        const blueRect = blueRef.current.getBoundingClientRect();
-        const redRect = redRef.current.getBoundingClientRect();
-        setLungeDist(redRect.left - blueRect.right);
+      if (playerRef.current && enemyRef.current) {
+        const playerRect = playerRef.current.getBoundingClientRect();
+        const enemyRect = enemyRef.current.getBoundingClientRect();
+        setLungeDist(enemyRect.left - playerRect.right);
       }
     }
     measure();
@@ -83,17 +92,17 @@ export function BattleArena({ gameStatus }: BattleArenaProps) {
       } as React.CSSProperties}
     >
       <div
-        ref={blueRef}
-        className={`knight knight--blue ${blueAttacking ? "knight--attacking-right" : ""}`}
+        ref={playerRef}
+        className={`knight knight--player ${playerAttacking ? "knight--attacking-right" : ""}`}
       >
-        <img src={blueSrc} alt="Blue Knight" />
+        <img src={playerSrc} alt={playerName} />
       </div>
 
       <div
-        ref={redRef}
-        className={`knight knight--red ${redAttacking ? "knight--attacking-left" : ""}`}
+        ref={enemyRef}
+        className={`knight knight--enemy ${enemyAttacking ? "knight--attacking-left" : ""}`}
       >
-        <img src={redSrc} alt="Red Knight" />
+        <img src={enemySrc} alt={enemyName} />
       </div>
     </div>
   );

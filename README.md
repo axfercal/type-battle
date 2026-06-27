@@ -10,6 +10,10 @@ After onboarding, the main menu routes between the existing Solo battle and a
 Multiplayer landing screen. Room actions remain disabled until the room service
 milestone is implemented.
 
+Solo setup includes a shared character catalog with Azure and Crimson knights.
+Character metadata is server-safe under `shared/characters/`, while directional
+sprite imports remain in the browser application.
+
 ## Run locally
 
 ```bash

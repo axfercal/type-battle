@@ -9,6 +9,12 @@ import { StatsPanel } from "./StatsPanel";
 import { EnemyBar } from "./EnemyBar";
 import { PlayerBar } from "./PlayerBar";
 import { BattleArena } from "./BattleArena";
+import { CharacterSelect } from "../features/characters/CharacterSelect";
+import {
+  getCharacterDefinition,
+  getOpponentCharacterId,
+} from "../../shared/characters/characterCatalog";
+import type { CharacterId } from "../../shared/characters/characterCatalog";
 
 interface BattlePanelProps {
   onExit: () => void;
@@ -16,6 +22,8 @@ interface BattlePanelProps {
 
 export function BattlePanel({ onExit }: BattlePanelProps) {
   const [difficulty, setDifficulty] = useState<Difficulty>("knight");
+  const [playerCharacterId, setPlayerCharacterId] =
+    useState<CharacterId>("azure-knight");
   const [hasStarted, setHasStarted] = useState(false);
   const { state, charResults, handleInput, getStats, restart } = useTyping();
   const { battle, playerAttack, resetBattle } = useBattle(difficulty);
@@ -23,6 +31,9 @@ export function BattlePanel({ onExit }: BattlePanelProps) {
   const prevGameStatusRef = useRef(battle.gameStatus);
 
   const stats = getStats();
+  const enemyCharacterId = getOpponentCharacterId(playerCharacterId);
+  const playerCharacter = getCharacterDefinition(playerCharacterId);
+  const enemyCharacter = getCharacterDefinition(enemyCharacterId);
 
   // When typing finishes, trigger player attack
   useEffect(() => {
@@ -67,6 +78,11 @@ export function BattlePanel({ onExit }: BattlePanelProps) {
           your rival strikes back.
         </p>
 
+        <CharacterSelect
+          selectedId={playerCharacterId}
+          onSelect={setPlayerCharacterId}
+        />
+
         <fieldset className="difficulty-picker">
           <legend>Choose your rival</legend>
           <div className="difficulty-options">
@@ -107,11 +123,23 @@ export function BattlePanel({ onExit }: BattlePanelProps) {
         <span>{DIFFICULTIES[difficulty].label} duel</span>
       </div>
       <div className="hp-bars">
-        <PlayerBar hp={battle.playerHp} maxHp={MAX_HP} />
-        <EnemyBar hp={battle.enemyHp} maxHp={MAX_HP} />
+        <PlayerBar
+          hp={battle.playerHp}
+          maxHp={MAX_HP}
+          label={`${playerCharacter.name} · You`}
+        />
+        <EnemyBar
+          hp={battle.enemyHp}
+          maxHp={MAX_HP}
+          label={enemyCharacter.name}
+        />
       </div>
 
-      <BattleArena gameStatus={battle.gameStatus} />
+      <BattleArena
+        gameStatus={battle.gameStatus}
+        playerCharacterId={playerCharacterId}
+        enemyCharacterId={enemyCharacterId}
+      />
 
       {battle.gameStatus !== "finished" && (
         <>

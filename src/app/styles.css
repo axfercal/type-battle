@@ -24,7 +24,7 @@ footer { margin-top: auto; text-align: center; color: #6f6878; font-size: 0.75re
 .eyebrow { margin: 0 0 0.55rem; color: #c59c54; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.17em; text-transform: uppercase; }
 .start-card h2 { margin: 0; font: 700 clamp(1.8rem, 6vw, 2.8rem)/1.1 Georgia, serif; color: #fffaf0; }
 .start-copy { max-width: 34rem; margin: 1rem auto 2rem; line-height: 1.65; color: #b8b0be; }
-.difficulty-picker { padding: 0; border: 0; }
+.difficulty-picker { margin-top: 1.5rem; padding: 0; border: 0; }
 .difficulty-picker legend { width: 100%; margin-bottom: 0.75rem; color: #dad3dc; font-size: 0.82rem; font-weight: 600; }
 .difficulty-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.7rem; }
 .difficulty-option { position: relative; padding: 0.9rem 0.65rem; display: flex; flex-direction: column; gap: 0.25rem; border: 1px solid #42374b; border-radius: 10px; cursor: pointer; background: rgba(16, 13, 24, 0.55); transition: border-color 160ms, background 160ms, transform 160ms; }
@@ -37,6 +37,24 @@ footer { margin-top: auto; text-align: center; color: #6f6878; font-size: 0.75re
 .primary-btn:hover, .restart-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
 .primary-btn:focus-visible, .restart-btn:focus-visible, .text-btn:focus-visible, .difficulty-option:has(input:focus-visible) { outline: 3px solid #8dc8ff; outline-offset: 3px; }
 .start-tip { margin: 0.75rem 0 0; color: #6f6878; font-size: 0.72rem; }
+
+/* Character selection */
+.character-picker { margin: 0; padding: 0; border: 0; }
+.character-picker legend { width: 100%; margin-bottom: 0.75rem; color: #dad3dc; font-size: 0.82rem; font-weight: 600; }
+.character-options { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.character-option { min-height: 7.5rem; padding: 0.75rem 0.9rem; position: relative; display: grid; grid-template-columns: 82px 1fr auto; align-items: center; gap: 0.7rem; overflow: hidden; border: 1px solid #42374b; border-radius: 11px; cursor: pointer; background: rgba(16, 13, 24, 0.55); text-align: left; transition: border-color 160ms, background 160ms, transform 160ms; }
+.character-option:hover { transform: translateY(-2px); border-color: #8e7041; }
+.character-option--selected { border-color: #d4a64f; background: linear-gradient(145deg, rgba(112, 78, 37, 0.2), rgba(25, 18, 33, 0.8)); }
+.character-option--disabled { cursor: not-allowed; filter: grayscale(0.8); opacity: 0.45; transform: none; }
+.character-option input { position: absolute; opacity: 0; pointer-events: none; }
+.character-option:has(input:focus-visible) { outline: 3px solid #8dc8ff; outline-offset: 3px; }
+.character-option img { width: 80px; height: 80px; display: block; image-rendering: pixelated; filter: drop-shadow(0 7px 5px rgba(0, 0, 0, 0.45)); }
+.character-option__copy { min-width: 0; display: flex; flex-direction: column; gap: 0.2rem; }
+.character-option__copy strong { color: #f3d89e; font: 700 0.88rem Georgia, serif; }
+.character-option__copy small { color: #9f7b3e; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+.character-option__copy > span { color: #7f7785; font-size: 0.68rem; line-height: 1.35; }
+.character-check { width: 1.35rem; height: 1.35rem; display: grid; place-items: center; border: 1px solid #4d4254; border-radius: 50%; color: transparent; background: #17121e; font-size: 0.7rem; }
+.character-option--selected .character-check { border-color: #d4a64f; color: #201723; background: #e1b960; }
 
 /* Local profile */
 .app--onboarding { justify-content: space-between; }
@@ -134,6 +152,8 @@ footer { margin-top: auto; text-align: center; color: #6f6878; font-size: 0.75re
 @media (max-width: 600px) {
   .app { width: min(100% - 1rem, 800px); padding: 0.8rem 0 1.25rem; gap: 1rem; }
   .difficulty-options { grid-template-columns: 1fr; }
+  .character-options { grid-template-columns: 1fr; }
+  .character-option { min-height: 6.5rem; }
   .difficulty-option { text-align: left; padding-left: 1rem; }
   .arena { min-height: 245px; padding: 1.25rem 1rem; }
   .knight img { width: 96px; height: 96px; }
