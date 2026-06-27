@@ -2,6 +2,10 @@
 
 A short, browser-based typing battle. Type the prompted sentence quickly and accurately to damage your opponent, then survive their counterattack.
 
+On first use, Typeblade asks for a battle name and stores a versioned local
+profile under `typeblade.profile.v1`. The profile never leaves the browser and
+can be edited from the header.
+
 ## Run locally
 
 ```bash
