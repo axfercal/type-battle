@@ -9,7 +9,16 @@ npm install
 npm run dev
 ```
 
-Open the local URL printed by Vite. No backend or environment variables are required.
+Open the local URL printed by Vite. The Cloudflare Vite plugin runs both the
+React app and Worker API in the local Workers runtime.
+
+The first backend endpoint is available at:
+
+```text
+GET /api/health
+```
+
+It returns `{"ok":true,"service":"typeblade"}`.
 
 ## Production build
 
@@ -18,14 +27,25 @@ npm run build
 npm run preview
 ```
 
-The deployable site is written to `dist/`. The build uses relative asset paths, so the folder can be published on Netlify, Vercel, Cloudflare Pages, GitHub Pages, or any static web host.
+The build contains both the browser application and Cloudflare Worker output in
+`dist/`. Validate it locally with `npm run preview`.
 
-For a host that asks for project settings, use:
+Run all TypeScript and lint checks with:
 
-- Build command: `npm run build`
-- Publish directory: `dist`
-- Node version: 20 or newer
+```bash
+npm run check
+```
+
+Deploy the application and Worker together to Cloudflare Workers with:
+
+```bash
+npm run deploy
+```
+
+Wrangler will prompt for Cloudflare authentication the first time it is used.
 
 ## Stack
 
-React 19, TypeScript, and Vite. Gameplay is entirely client-side.
+React 19, TypeScript, Vite, Cloudflare Workers, and the Cloudflare Vite plugin.
+Solo gameplay remains client-side; multiplayer APIs will be added incrementally
+under `worker/`.
