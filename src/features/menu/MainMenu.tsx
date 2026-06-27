@@ -32,7 +32,7 @@ export function MainMenu({
           </button>
 
           <button className="mode-card mode-card--featured" type="button" onClick={onMultiplayer}>
-            <span className="mode-badge">Soon</span>
+            <span className="mode-badge">New</span>
             <span className="mode-icon" aria-hidden="true">⚔</span>
             <span className="mode-copy">
               <strong>Multiplayer</strong>

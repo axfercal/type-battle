@@ -1,40 +1,51 @@
+import type { LocalProfile } from "../profile/profileTypes";
+import { RoomEntry } from "../multiplayer/RoomEntry";
+import { RoomLobby } from "../multiplayer/RoomLobby";
+import { useRoom } from "../multiplayer/useRoom";
+
 interface MultiplayerMenuProps {
+  profile: LocalProfile;
   onBack: () => void;
 }
 
-export function MultiplayerMenu({ onBack }: MultiplayerMenuProps) {
+export function MultiplayerMenu({ profile, onBack }: MultiplayerMenuProps) {
+  const roomState = useRoom(profile);
+  const loading = roomState.status === "loading";
+
   return (
     <main className="multiplayer-menu" aria-labelledby="multiplayer-menu-title">
       <div className="screen-toolbar">
         <button className="back-btn" type="button" onClick={onBack}>← Main menu</button>
-        <span>Multiplayer</span>
+        <span>{roomState.session ? `Room ${roomState.session.code}` : "Multiplayer"}</span>
       </div>
 
-      <section className="start-card multiplayer-card">
-        <div className="crest" aria-hidden="true">⚔</div>
-        <p className="eyebrow">Live rooms</p>
-        <h2 id="multiplayer-menu-title">Challenge a friend.</h2>
-        <p className="start-copy">
-          Create a private room and share its code, or enter a code from another player.
-        </p>
-
-        <div className="room-action-grid" aria-describedby="room-foundation-note">
-          <button className="room-action" type="button" disabled>
-            <span aria-hidden="true">＋</span>
-            <strong>Create room</strong>
-            <small>Start a private duel</small>
-          </button>
-          <button className="room-action" type="button" disabled>
-            <span aria-hidden="true">#</span>
-            <strong>Join room</strong>
-            <small>Enter a six-character code</small>
-          </button>
-        </div>
-
-        <p className="foundation-note" id="room-foundation-note">
-          Room creation and joining arrive in the next multiplayer milestone.
-        </p>
-      </section>
+      {roomState.session && roomState.room ? (
+        <RoomLobby
+          room={roomState.room}
+          session={roomState.session}
+          loading={loading}
+          error={roomState.error}
+          onRefresh={roomState.refreshRoom}
+          onLeave={roomState.leaveRoom}
+        />
+      ) : roomState.session ? (
+        <section className="start-card multiplayer-card room-loading">
+          <div className="connection-spinner" aria-hidden="true" />
+          <p className="eyebrow">Room {roomState.session.code}</p>
+          <h2 id="multiplayer-menu-title">Restoring your seat…</h2>
+          <p className="start-copy">Checking the saved room session.</p>
+          {roomState.error && <p className="room-error" role="alert">{roomState.error}</p>}
+          <button className="text-btn" type="button" onClick={() => void roomState.leaveRoom()}>Forget this room</button>
+        </section>
+      ) : (
+        <RoomEntry
+          username={profile.username}
+          loading={loading}
+          error={roomState.error}
+          onCreate={roomState.createRoom}
+          onJoin={roomState.joinRoom}
+        />
+      )}
     </main>
   );
 }

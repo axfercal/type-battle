@@ -7,12 +7,23 @@ profile under `typeblade.profile.v1`. The profile never leaves the browser and
 can be edited from the header.
 
 After onboarding, the main menu routes between the existing Solo battle and a
-Multiplayer landing screen. Room actions remain disabled until the room service
-milestone is implemented.
+Multiplayer room flow.
 
 Solo setup includes a shared character catalog with Azure and Crimson knights.
 Character metadata is server-safe under `shared/characters/`, while directional
 sprite imports remain in the browser application.
+
+Multiplayer room creation is backed by one SQLite Durable Object per six-character
+room code. The HTTP foundation supports creating, joining, refreshing, restoring,
+and leaving two-player lobbies. Room sessions are stored in `sessionStorage` and
+lobby refresh is manual until the WebSocket milestone.
+
+```text
+POST /api/rooms
+POST /api/rooms/:code/join
+GET  /api/rooms/:code
+POST /api/rooms/:code/leave
+```
 
 ## Run locally
 

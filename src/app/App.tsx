@@ -54,7 +54,10 @@ function App() {
         <BattlePanel onExit={navigation.openMainMenu} />
       )}
       {navigation.screen === "multiplayer" && (
-        <MultiplayerMenu onBack={navigation.openMainMenu} />
+        <MultiplayerMenu
+          profile={profile}
+          onBack={navigation.openMainMenu}
+        />
       )}
       <footer>Built for quick battles. Your profile stays in this browser.</footer>
       {isEditingProfile && (
