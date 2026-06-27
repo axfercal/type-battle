@@ -8,6 +8,7 @@ export interface RoomPlayer {
   username: string;
   characterId: CharacterId | null;
   ready: boolean;
+  connected: boolean;
 }
 
 export interface PublicRoomState {

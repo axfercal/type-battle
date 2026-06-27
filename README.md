@@ -14,15 +14,17 @@ Character metadata is server-safe under `shared/characters/`, while directional
 sprite imports remain in the browser application.
 
 Multiplayer room creation is backed by one SQLite Durable Object per six-character
-room code. The HTTP foundation supports creating, joining, refreshing, restoring,
-and leaving two-player lobbies. Room sessions are stored in `sessionStorage` and
-lobby refresh is manual until the WebSocket milestone.
+room code. The HTTP foundation supports creating, joining, restoring, and leaving
+two-player lobbies. Room sessions are stored in `sessionStorage`. Hibernating
+WebSockets deliver automatic lobby and presence updates, with client reconnection
+after temporary interruptions.
 
 ```text
 POST /api/rooms
 POST /api/rooms/:code/join
 GET  /api/rooms/:code
 POST /api/rooms/:code/leave
+GET  /api/rooms/:code/socket?token=:reconnectToken
 ```
 
 ## Run locally
@@ -69,6 +71,6 @@ Wrangler will prompt for Cloudflare authentication the first time it is used.
 
 ## Stack
 
-React 19, TypeScript, Vite, Cloudflare Workers, and the Cloudflare Vite plugin.
-Solo gameplay remains client-side; multiplayer APIs will be added incrementally
-under `worker/`.
+React 19, TypeScript, Vite, Cloudflare Workers, Durable Objects, hibernating
+WebSockets, and the Cloudflare Vite plugin. Solo gameplay remains client-side;
+authoritative multiplayer room state lives under `worker/`.

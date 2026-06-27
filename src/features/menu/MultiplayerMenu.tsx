@@ -23,9 +23,8 @@ export function MultiplayerMenu({ profile, onBack }: MultiplayerMenuProps) {
         <RoomLobby
           room={roomState.room}
           session={roomState.session}
-          loading={loading}
+          connectionStatus={roomState.connectionStatus}
           error={roomState.error}
-          onRefresh={roomState.refreshRoom}
           onLeave={roomState.leaveRoom}
         />
       ) : roomState.session ? (

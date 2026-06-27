@@ -127,6 +127,11 @@ footer { margin-top: auto; text-align: center; color: #6f6878; font-size: 0.75re
 .lobby-seat { width: 0.55rem; height: 0.55rem; position: absolute; top: 0.65rem; right: 0.65rem; border-radius: 50%; background: #665e6b; box-shadow: 0 0 0 3px rgba(102, 94, 107, 0.15); }
 .lobby-seat--filled { background: #72d7b7; box-shadow: 0 0 0 3px rgba(114, 215, 183, 0.15); }
 .lobby-actions { margin-top: 1.25rem; display: flex; align-items: center; justify-content: center; gap: 0.7rem; }
+.connection-pill { min-width: 6rem; padding: 0.42rem 0.7rem; display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; border: 1px solid #4b424f; border-radius: 99px; color: #a69eaa; background: rgba(12, 9, 16, 0.5); font-size: 0.66rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; }
+.connection-pill::before { width: 0.45rem; height: 0.45rem; content: ""; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 3px currentColor; opacity: 0.75; }
+.connection-pill--connected { border-color: rgba(114, 215, 183, 0.35); color: #72d7b7; }
+.connection-pill--connecting, .connection-pill--reconnecting { border-color: rgba(242, 199, 109, 0.35); color: #f2c76d; }
+.connection-pill--error { border-color: rgba(255, 126, 143, 0.35); color: #ff7e8f; }
 .secondary-btn { min-height: 2.7rem; padding: 0.65rem 1.1rem; border: 1px solid #655271; border-radius: 7px; cursor: pointer; color: #d3c9d6; background: #2b2132; font-weight: 700; }
 .secondary-btn:hover { border-color: #9b783e; color: #f2d592; }
 .secondary-btn:focus-visible { outline: 3px solid #8dc8ff; outline-offset: 3px; }

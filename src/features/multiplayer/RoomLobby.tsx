@@ -3,22 +3,21 @@ import type {
   PublicRoomState,
   RoomSession,
 } from "../../../shared/multiplayer/roomTypes";
+import type { RoomConnectionStatus } from "./useRoom";
 
 interface RoomLobbyProps {
   room: PublicRoomState;
   session: RoomSession;
-  loading: boolean;
+  connectionStatus: RoomConnectionStatus;
   error: string | null;
-  onRefresh: () => Promise<void>;
   onLeave: () => Promise<void>;
 }
 
 export function RoomLobby({
   room,
   session,
-  loading,
+  connectionStatus,
   error,
-  onRefresh,
   onLeave,
 }: RoomLobbyProps) {
   const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">("idle");
@@ -41,7 +40,7 @@ export function RoomLobby({
       <p className="eyebrow">Private room</p>
       <h2 id="room-title">Room {room.code}</h2>
       <p className="start-copy">
-        Share the invite code with one rival. Live lobby updates arrive in the next step.
+        Share the invite code with one rival. This lobby updates automatically.
       </p>
 
       <button className="invite-code" type="button" onClick={() => void copyInvite()}>
@@ -58,18 +57,34 @@ export function RoomLobby({
       <div className="lobby-players">
         {[host, guest].map((player, index) => (
           <div className={`lobby-player ${player?.seat === session.seat ? "lobby-player--you" : ""}`} key={player?.seat ?? `empty-${index}`}>
-            <span className={`lobby-seat ${player ? "lobby-seat--filled" : ""}`} aria-hidden="true" />
+            <span className={`lobby-seat ${player?.connected ? "lobby-seat--filled" : ""}`} aria-hidden="true" />
             <strong>{player?.username ?? "Waiting for rival…"}</strong>
-            <small>{player ? (player.seat === session.seat ? "You" : "Rival") : "Open seat"}</small>
+            <small>
+              {player
+                ? `${player.seat === session.seat ? "You" : "Rival"} · ${player.connected ? "Connected" : "Offline"}`
+                : "Open seat"}
+            </small>
           </div>
         ))}
       </div>
 
       {error && <p className="room-error" role="alert">{error}</p>}
       <div className="lobby-actions">
-        <button className="secondary-btn" type="button" disabled={loading} onClick={() => void onRefresh()}>
-          {loading ? "Refreshing…" : "Refresh lobby"}
-        </button>
+        <span
+          className={`connection-pill connection-pill--${connectionStatus}`}
+          role="status"
+          aria-live="polite"
+        >
+          {connectionStatus === "connected"
+            ? "Live"
+            : connectionStatus === "reconnecting"
+              ? "Reconnecting…"
+              : connectionStatus === "connecting"
+                ? "Connecting…"
+                : connectionStatus === "error"
+                  ? "Connection interrupted"
+                  : "Offline"}
+        </span>
         <button className="text-btn" type="button" onClick={() => void onLeave()}>Leave room</button>
       </div>
     </section>

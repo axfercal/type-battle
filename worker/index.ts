@@ -147,6 +147,26 @@ async function leaveRoom(
   return roomResult(await room.leaveRoom(token));
 }
 
+function connectRoom(
+  request: Request,
+  env: Env,
+  code: string,
+): Response | Promise<Response> {
+  if (request.headers.get("Upgrade")?.toLowerCase() !== "websocket") {
+    return json(
+      {
+        error: {
+          code: "INVALID_REQUEST",
+          message: "This endpoint requires a WebSocket connection.",
+        },
+      },
+      { status: 426 },
+    );
+  }
+
+  return env.GAME_ROOMS.getByName(code).fetch(request);
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
@@ -157,6 +177,24 @@ export default {
 
     if (request.method === "POST" && url.pathname === "/api/rooms") {
       return createRoom(request, env);
+    }
+
+    const socketMatch = url.pathname.match(/^\/api\/rooms\/([^/]+)\/socket$/);
+    if (socketMatch) {
+      const code = normalizeRoomCode(socketMatch[1]);
+      if (!code) {
+        return json(
+          {
+            error: {
+              code: "INVALID_REQUEST",
+              message: "Room codes contain six letters or numbers.",
+            },
+          },
+          { status: 400 },
+        );
+      }
+
+      if (request.method === "GET") return connectRoom(request, env, code);
     }
 
     const match = url.pathname.match(
