@@ -1,13 +1,17 @@
 import { useState } from "react";
 import { BattlePanel } from "../components/BattlePanel";
+import { MainMenu } from "../features/menu/MainMenu";
+import { MultiplayerMenu } from "../features/menu/MultiplayerMenu";
 import { ProfileMenu } from "../features/profile/ProfileMenu";
 import { ProfileSetup } from "../features/profile/ProfileSetup";
 import { useProfile } from "../features/profile/useProfile";
+import { useAppNavigation } from "./useAppNavigation";
 import "./styles.css";
 
 function App() {
   const { profile, createProfile, updateUsername } = useProfile();
   const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const navigation = useAppNavigation();
 
   if (!profile) {
     return (
@@ -38,7 +42,20 @@ function App() {
           <strong>{profile.username}</strong>
         </button>
       </header>
-      <BattlePanel />
+      {navigation.screen === "main-menu" && (
+        <MainMenu
+          username={profile.username}
+          onSolo={navigation.openSolo}
+          onMultiplayer={navigation.openMultiplayer}
+          onEditProfile={() => setIsEditingProfile(true)}
+        />
+      )}
+      {navigation.screen === "solo" && (
+        <BattlePanel onExit={navigation.openMainMenu} />
+      )}
+      {navigation.screen === "multiplayer" && (
+        <MultiplayerMenu onBack={navigation.openMainMenu} />
+      )}
       <footer>Built for quick battles. Your profile stays in this browser.</footer>
       {isEditingProfile && (
         <ProfileMenu

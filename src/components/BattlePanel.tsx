@@ -10,7 +10,11 @@ import { EnemyBar } from "./EnemyBar";
 import { PlayerBar } from "./PlayerBar";
 import { BattleArena } from "./BattleArena";
 
-export function BattlePanel() {
+interface BattlePanelProps {
+  onExit: () => void;
+}
+
+export function BattlePanel({ onExit }: BattlePanelProps) {
   const [difficulty, setDifficulty] = useState<Difficulty>("knight");
   const [hasStarted, setHasStarted] = useState(false);
   const { state, charResults, handleInput, getStats, restart } = useTyping();
@@ -83,6 +87,7 @@ export function BattlePanel() {
         </fieldset>
 
         <button className="primary-btn" onClick={handleStart}>Enter the arena</button>
+        <button className="text-btn solo-back-btn" type="button" onClick={onExit}>Back to main menu</button>
         <p className="start-tip">No account needed · Best with a keyboard</p>
       </section>
     );
@@ -93,6 +98,10 @@ export function BattlePanel() {
 
   return (
     <div className="battle-panel">
+      <div className="screen-toolbar">
+        <button className="back-btn" type="button" onClick={onExit}>← Main menu</button>
+        <span>Solo battle</span>
+      </div>
       <div className="battle-heading">
         <span>Round {battle.round}</span>
         <span>{DIFFICULTIES[difficulty].label} duel</span>
@@ -143,6 +152,9 @@ export function BattlePanel() {
           </button>
           <button className="text-btn" onClick={() => setHasStarted(false)}>
             Change difficulty
+          </button>
+          <button className="text-btn" onClick={onExit}>
+            Main menu
           </button>
         </div>
       )}

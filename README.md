@@ -6,6 +6,10 @@ On first use, Typeblade asks for a battle name and stores a versioned local
 profile under `typeblade.profile.v1`. The profile never leaves the browser and
 can be edited from the header.
 
+After onboarding, the main menu routes between the existing Solo battle and a
+Multiplayer landing screen. Room actions remain disabled until the room service
+milestone is implemented.
+
 ## Run locally
 
 ```bash
